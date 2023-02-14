@@ -16,6 +16,33 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `Review`
+--
+
+DROP TABLE IF EXISTS `Review`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Review` (
+  `u_id` int NOT NULL,
+  `p_id` int NOT NULL,
+  `score` int NOT NULL,
+  PRIMARY KEY (`u_id`),
+  KEY `p_id_idx` (`p_id`),
+  CONSTRAINT `p_id_review` FOREIGN KEY (`p_id`) REFERENCES `product` (`p_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `u_id_review` FOREIGN KEY (`u_id`) REFERENCES `user` (`u_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Review`
+--
+
+LOCK TABLES `Review` WRITE;
+/*!40000 ALTER TABLE `Review` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Review` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `employee`
 --
 
@@ -23,14 +50,15 @@ DROP TABLE IF EXISTS `employee`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `employee` (
-  `u_id` int DEFAULT NULL,
-  `salary` int DEFAULT NULL,
-  `f_name` varchar(30) DEFAULT NULL,
-  `l_name` varchar(30) DEFAULT NULL,
-  `is_manager` tinyint(1) DEFAULT NULL,
-  KEY `u_id` (`u_id`),
-  CONSTRAINT `employee_ibfk_1` FOREIGN KEY (`u_id`) REFERENCES `user` (`u_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `u_id` int NOT NULL,
+  `salery` int DEFAULT NULL,
+  `is_manager` tinyint DEFAULT NULL,
+  `f_name` varchar(32) DEFAULT NULL,
+  `l_name` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`u_id`),
+  UNIQUE KEY `u_id_UNIQUE` (`u_id`),
+  CONSTRAINT `u_id_employee` FOREIGN KEY (`u_id`) REFERENCES `user` (`u_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +67,39 @@ CREATE TABLE `employee` (
 
 LOCK TABLES `employee` WRITE;
 /*!40000 ALTER TABLE `employee` DISABLE KEYS */;
+INSERT INTO `employee` VALUES (0,100000,1,'Elon','Musk'),(1,5,0,'Bob','Bob');
 /*!40000 ALTER TABLE `employee` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `order`
+--
+
+DROP TABLE IF EXISTS `order`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `order` (
+  `o_id` int NOT NULL,
+  `u_id` int NOT NULL,
+  `p_id` int NOT NULL,
+  `order_date` timestamp NOT NULL,
+  `quantity` int NOT NULL,
+  PRIMARY KEY (`o_id`),
+  UNIQUE KEY `o_id_UNIQUE` (`o_id`),
+  KEY `u_id_idx` (`u_id`),
+  KEY `p_id_idx` (`p_id`),
+  CONSTRAINT `p_id_order` FOREIGN KEY (`p_id`) REFERENCES `product` (`p_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `u_id_order` FOREIGN KEY (`u_id`) REFERENCES `user` (`u_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `order`
+--
+
+LOCK TABLES `order` WRITE;
+/*!40000 ALTER TABLE `order` DISABLE KEYS */;
+/*!40000 ALTER TABLE `order` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -50,13 +110,15 @@ DROP TABLE IF EXISTS `product`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `product` (
-  `id` int NOT NULL,
-  `price` int DEFAULT NULL,
-  `stock` int DEFAULT NULL,
-  `name` varchar(30) DEFAULT NULL,
-  `description` varchar(256) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `p_id` int NOT NULL,
+  `price` int NOT NULL,
+  `stock` int NOT NULL,
+  `name` varchar(32) NOT NULL,
+  `description` varchar(256) NOT NULL,
+  `image` varchar(256) DEFAULT NULL,
+  PRIMARY KEY (`p_id`),
+  UNIQUE KEY `p_id_UNIQUE` (`p_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -65,6 +127,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
+INSERT INTO `product` VALUES (0,100,10,'Gigachad','giga','Images/gigachad.jpg'),(1,50,30,'Hello there','obi','Images/hellothere.jpg'),(2,150,5,'Doge','dog','Images/doge.jpg');
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -80,10 +143,11 @@ CREATE TABLE `shopping_cart` (
   `p_id` int NOT NULL,
   `quantity` int NOT NULL,
   PRIMARY KEY (`c_id`),
-  KEY `p_id` (`p_id`),
-  CONSTRAINT `shopping_cart_ibfk_1` FOREIGN KEY (`c_id`) REFERENCES `user` (`u_id`),
-  CONSTRAINT `shopping_cart_ibfk_2` FOREIGN KEY (`p_id`) REFERENCES `product` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  UNIQUE KEY `c_id_UNIQUE` (`c_id`),
+  KEY `p_id_idx` (`p_id`),
+  CONSTRAINT `c_id_cart` FOREIGN KEY (`c_id`) REFERENCES `user` (`u_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `p_id_cart` FOREIGN KEY (`p_id`) REFERENCES `product` (`p_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -104,10 +168,12 @@ DROP TABLE IF EXISTS `user`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
   `u_id` int NOT NULL,
-  `u_name` varchar(30) DEFAULT NULL,
-  `password` varchar(128) DEFAULT NULL,
-  PRIMARY KEY (`u_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `u_name` varchar(32) NOT NULL,
+  `u_password` varchar(128) NOT NULL,
+  PRIMARY KEY (`u_id`),
+  UNIQUE KEY `u_id_UNIQUE` (`u_id`),
+  UNIQUE KEY `u_name_UNIQUE` (`u_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -116,6 +182,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (0,'manager','test_password'),(1,'Bob','1234'),(2,'Ted','123');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -128,4 +195,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-01-31 13:25:33
+-- Dump completed on 2023-02-14 13:21:36
