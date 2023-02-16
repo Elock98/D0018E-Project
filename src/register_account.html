@@ -20,7 +20,8 @@
     <body>
         <!---Navbar--->
         <nav class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container"> <!---make "container-fluid" if needed more space--->
+            <div class="container">
+                <!---make "container-fluid" if needed more space--->
                 <!---Make collapsable--->
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#page_header" aria-expanded="false" aria-controls="navbar">
@@ -60,5 +61,28 @@
             </div>
         </nav>
 
+        <!--SignUp square-->
+        <div class="container">
+            <div class="panel panel-default" style="text-align:center;">
+
+                <div class="center2">
+                    <h1>SignUp</h1>
+                    <form method="post">
+                        <div class="text_line">
+                            <input type="Username" required />
+                            <span></span>
+                            <label>Username</label>
+                        </div>
+
+                        <div class="text_line">
+                            <input type="password" required />
+                            <span></span>
+                            <label>Password</label>
+                        </div>
+                        <input type="submit" value="SignUp" />
+                    </form>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
