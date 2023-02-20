@@ -19,7 +19,7 @@
 
     <body>
         <!---Navbar--->
-        <nav class="navbar navbar-inverse navbar-static-top">
+        <nav class="navbar navbar-inverse navbar-fixed-top">
 	       <a class="navbar-brand" href="">MemeStones</a>
             <div class="container"> <!---make "container-fluid" if needed more space--->
                 <!---Make collapsable--->
@@ -53,14 +53,14 @@
                     </div>
                     <!--Accout related buttons-->
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Sign in</a></li>
+                        <li><a href="login.php"><span class="glyphicon glyphicon-log-in"></span> Sign in</a></li>
                         <li><a href="register_account.html"><span class="glyphicon glyphicon-user"></span> Sign up</a></li>
                     </ul>
                 </div>
             </div>
         </nav>
 
-        <div class="container">
+        <div class="container" style="padding-top:100px;">
             <div class="panel panel-default">
                 <div class="panel-body">
 <?php
@@ -97,7 +97,7 @@
     </body>
 	<script>
 		function goto_product_page(id) {
-			window.location.href = "product_page.html?pid=" + id;
+			window.location.href = "product_page.php?pid=" + id;
 		}
 	</script>
 </html>
