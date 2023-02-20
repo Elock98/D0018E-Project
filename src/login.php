@@ -18,10 +18,11 @@
     </head>
 
     <body>
-        <!---Navbar--->
+        <!--Navbar-->
         <nav class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container"> <!---make "container-fluid" if needed more space--->
-                <!---Make collapsable--->
+            <div class="container">
+                <!--make "container-fluid" if needed more space-->
+                <!--Make collapsable-->
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#page_header" aria-expanded="false" aria-controls="navbar">
                         <span class="sr-only">Toggle navigation</span>
@@ -31,7 +32,7 @@
                     </button>
                     <a href="" class="navbar-brand navbar-left"><img src="img/header-icon.jpeg"></a>
                 </div>
-                <!---Collapsable navbar--->
+                <!--Collapsable navbar-->
                 <div class="collapse navbar-collapse" id="page_header">
                     <!--Navigation buttons-->
                     <div class="navbar-nav navbar-left">
@@ -53,12 +54,78 @@
                     </div>
                     <!--Accout related buttons-->
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Sign in</a></li>
+                        <li><a href="login.php"><span class="glyphicon glyphicon-log-in"></span> Sign in</a></li>
                         <li><a href="register_account.html"><span class="glyphicon glyphicon-user"></span> Sign up</a></li>
                     </ul>
                 </div>
             </div>
         </nav>
 
+        <!--SignÍn square-->
+        <div class="container">
+            <div class="panel panel-default" style="text-align:center;">
+
+                <div class="center">
+                    <h1>SignIn</h1>
+                    <form method="post" action="login.php">
+                        <div class="text_line">
+                            <input type="Username" name="username" required />
+                            <span></span>
+                            <label>Username</label>
+                        </div>
+
+                        <div class="text_line">
+                            <input type="password" name="password" required />
+                            <span></span>
+                            <label>Password</label>
+                        </div>
+                        <input type="submit" value="SignIn" />
+                        <div class="SignUp">
+                            If not a member? <a href="file:///C:/Users/samue/Desktop/D0018E/D0018E-kod/D0018E-Project/src/register_account.html">SignUp</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+<script>
+function go_home(){
+        window.location.href = "index.php";
+}
+</script>
+
+
+<?php
+	$user="admin";
+	$password="1234";
+	$database="stonebase";
+	$table="product";
+
+	$server="localhost";
+
+	$conn = new mysqli($server, $user, $password, $database);
+	if($conn->connect_error){
+		die("connection failed: " . $conn->connect_error);
+	}
+
+	/*Login should take username and password and check if it exists in database user table
+	  If it does, the user is logged in and goes to another page, if not, then login failed */
+
+	$username = $_POST['username'];
+	$pass_input = $_POST['password'];
+
+	$sql = "SELECT u_name, u_password  FROM user WHERE u_name='$username' AND u_password='$pass_input'";
+	$res = $conn->query($sql);
+
+	if(mysqli_num_rows($res) == 1){
+		echo '<script type="text/javascript">',
+			'go_home();',
+			'</script>';
+	} else{
+	}
+
+?>
+
     </body>
 </html>
+
