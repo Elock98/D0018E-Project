@@ -20,7 +20,7 @@
     <body>
         <!---Navbar--->
         <nav class="navbar navbar-inverse navbar-static-top">
-	    <a class="navbar-brand" href="">MemeStones</a>
+	       <a class="navbar-brand" href="">MemeStones</a>
             <div class="container"> <!---make "container-fluid" if needed more space--->
                 <!---Make collapsable--->
                 <div class="navbar-header">
@@ -36,7 +36,7 @@
                     <!--Navigation buttons-->
                     <div class="navbar-nav navbar-left">
                         <ul class="nav navbar-nav">
-                            <li class="active"><a href="index.html">Home <span class="sr-only">(current)</a></li>
+                            <li class="active"><a href="index.php">Home <span class="sr-only">(current)</a></li>
                             <li class="inactive"><a href="about.html">About <span class="sr-only">(current)</a></li>
                         </ul>
                     </div>
@@ -59,6 +59,7 @@
                 </div>
             </div>
         </nav>
+
         <div class="container">
             <div class="panel panel-default">
                 <div class="panel-body">
@@ -77,9 +78,9 @@
 
 	$result = $conn->query($sql);
 
-    echo '<table class="table table-bordered table-responsive" cellpadding="0">';
+        echo '<table class="table table-bordered table-responsive table-hover table-cursor" cellpadding="0">';
 	while($row = $result->fetch_assoc()) {
-        echo '<tr>
+        echo '<tr onclick="goto_product_page(' . $row['p_id'] . ')">
                 <td style="width: 10%">' . '<img src="'.$row['image'].'">' . '</td>
                 <td><h1>' . $row['name'] . '</h1><hr>
                 <h3>' . $row['description'] . '</h3></td>
@@ -94,4 +95,10 @@
             </div>
         </div>
     </body>
+	<script>
+		function goto_product_page(id) {
+			window.location.href = "product_page.html?pid=" + id;
+		}
+	</script>
 </html>
+

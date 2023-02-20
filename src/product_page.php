@@ -29,7 +29,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a href="" class="navbar-brand navbar-left"><img src="img/header-icon.jpeg"></a>
+                    <a href="" class="navbar-brand navbar-left"><img src="Images/header-icon.jpeg"></a>
                 </div>
                 <!---Collapsable navbar--->
                 <div class="collapse navbar-collapse" id="page_header">
@@ -59,6 +59,38 @@
                 </div>
             </div>
         </nav>
+
+        <?php
+            ini_set('display_errors', 1);
+            $user="admin";
+            $password="1234";
+            $database="stonebase";
+            $server="localhost";
+
+            $conn = new mysqli($server, $user, $password, $database);
+            if($conn->connect_error){
+                die("Connection failed: " . $conn->connect_error);
+            }
+
+            $pid=$_GET["pid"];
+            
+            $sql = "SELECT * FROM product WHERE p_id = $pid";
+
+            $result = $conn->query($sql);
+
+            echo '<table class="table table-bordered table-responsive" cellpadding="0">';
+            $row = $result->fetch_assoc();
+            echo '<tr>
+                <td style="width: 20%">' . '<img src="'.$row['image'].'" width="100%" height="100%">' . '
+                <h3>review</h3></td>
+                <td><h1>' . $row['name'] . '</h1><hr>
+                <h3>' . $row['description'] . '</h3></td>
+                <td style="width:20%; vertical-allign: middle; text-allign: center;"><h2>' . $row['price'] . ' kr</h2>
+                <h2>' . $row['stock'] . ' in stock</h2>
+                <button type="button">Add to cart</button></td>
+                
+            </tr>';
+        ?>
 
     </body>
 </html>
