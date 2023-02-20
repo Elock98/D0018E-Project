@@ -37,7 +37,7 @@
                     <!--Navigation buttons-->
                     <div class="navbar-nav navbar-left">
                         <ul class="nav navbar-nav">
-                            <li class="inactive"><a href="index.html">Home <span class="sr-only">(current)</a></li>
+                            <li class="inactive"><a href="index.php">Home <span class="sr-only">(current)</a></li>
                             <li class="inactive"><a href="about.html">About <span class="sr-only">(current)</a></li>
                         </ul>
                     </div>
@@ -81,7 +81,7 @@
                         </div>
                         <input type="submit" value="SignIn" />
                         <div class="SignUp">
-                            If not a member? <a href="file:///C:/Users/samue/Desktop/D0018E/D0018E-kod/D0018E-Project/src/register_account.html">SignUp</a>
+                            If not a member? <a href="register_account.html">SignUp</a>
                         </div>
                     </form>
                 </div>
