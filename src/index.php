@@ -20,7 +20,7 @@
     <body>
         <!---Navbar--->
         <nav class="navbar navbar-inverse navbar-static-top">
-	    <a class="navbar-brand" href="">MemeStones</a>
+	       <a class="navbar-brand" href="">MemeStones</a>
             <div class="container"> <!---make "container-fluid" if needed more space--->
                 <!---Make collapsable--->
                 <div class="navbar-header">
@@ -36,7 +36,7 @@
                     <!--Navigation buttons-->
                     <div class="navbar-nav navbar-left">
                         <ul class="nav navbar-nav">
-                            <li class="active"><a href="index.html">Home <span class="sr-only">(current)</a></li>
+                            <li class="active"><a href="index.php">Home <span class="sr-only">(current)</a></li>
                             <li class="inactive"><a href="about.html">About <span class="sr-only">(current)</a></li>
                         </ul>
                     </div>
@@ -59,6 +59,7 @@
                 </div>
             </div>
         </nav>
+
         <div class="container">
             <div class="panel panel-default">
                 <div class="panel-body">
@@ -100,3 +101,4 @@
 		}
 	</script>
 </html>
+
