@@ -39,7 +39,7 @@
                     <!--Navigation buttons-->
                     <div class="navbar-nav navbar-left">
                         <ul class="nav navbar-nav">
-                            <li class="active"><a href="index.html">Home <span class="sr-only">(current)</a></li>
+                            <li class="active"><a href="index.php">Home <span class="sr-only">(current)</a></li>
                             <li class="inactive"><a href="about.html">About <span class="sr-only">(current)</a></li>
                         </ul>
                     </div>
@@ -56,21 +56,19 @@
                     </div>
                     <!--Accout related buttons-->
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Sign in</a></li>
-                        <li><a href="register_account.html"><span class="glyphicon glyphicon-user"></span> Sign up</a></li>
+                        <li><a href="login.php"><span class="glyphicon glyphicon-log-in"></span> Sign in</a></li>
+                        <li><a href="register_account.php"><span class="glyphicon glyphicon-user"></span> Sign up</a></li>
                     </ul>
                 </div>
             </div>
         </nav>
 <?php
-
 if(!isset($_SESSION["u_id"])) {
 	echo '<div class="container" style="padding-top:50px;">
 		<h1 style="align: center;"> YOU ARE NOT AN EMPLOYEE </h1>
 		</div>';
 		die("Not logged in as an employee");
 }else{
-
 	/*Connect to db*/
 	$user = "admin";
 	$password="1234";
