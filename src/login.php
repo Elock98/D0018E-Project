@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 
+<?php
+	session_start();
+?>
+
 <html>
 
     <title>We have stones</title>
@@ -94,7 +98,6 @@ function go_home(){
 }
 </script>
 
-
 <?php
 	$user="admin";
 	$password="1234";
@@ -114,10 +117,14 @@ function go_home(){
 	$username = $_POST['username'];
 	$pass_input = $_POST['password'];
 
-	$sql = "SELECT u_name, u_password  FROM user WHERE u_name='$username' AND u_password='$pass_input'";
+	$sql = "SELECT u_id FROM user WHERE u_name='$username' AND u_password='$pass_input'";
 	$res = $conn->query($sql);
 
 	if(mysqli_num_rows($res) == 1){
+		$row=$res->fetch_assoc();
+		$u_id=$row["u_id"];
+		$_SESSION["u_id"]=$u_id;
+
 		echo '<script type="text/javascript">',
 			'go_home();',
 			'</script>';
