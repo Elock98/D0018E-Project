@@ -85,7 +85,7 @@
                         </div>
                         <input type="submit" value="SignIn" />
                         <div class="SignUp">
-                            If not a member? <a href="file:///C:/Users/samue/Desktop/D0018E/D0018E-kod/D0018E-Project/src/register_account.html">SignUp</a>
+                            If not a member? <a href="register_account.php">SignUp</a>
                         </div>
                     </form>
                 </div>
@@ -128,8 +128,12 @@ function go_home(){
 		echo '<script type="text/javascript">',
 			'go_home();',
 			'</script>';
-	} else{
+
+	/* Works but could make the message look better*/
+	} else if($username != "" || $pass_input != ""){
+		echo '<script> alert("wrong password or username"); window.location="/login.php" </script>';
 	}
+
 
 ?>
 
