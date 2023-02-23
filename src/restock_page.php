@@ -91,40 +91,92 @@ if(!isset($_SESSION["u_id"])) {
 			</div>';
 		die("Not logged in as an employee");
 	}
+
 }
+
 ?>
 
 	<!-- Logged in as employee here -->
 	<div class="container" style="padding-top:100px;">
 	    <div class="panel panel-default">
 		<div class="panel-body">
-		<form>
+		<form method="post">
 <?php
 
 $sql = "SELECT * FROM product";
 
 $res = $conn->query($sql);
 
+$prices = array();
+$prices_name = array();
+$stocks = array();
+$stocks_name = array();
 
 echo '<table class="table table-bordered table-responsive table-hover table-cursor" cellpadding="0">';
 while($row = $res->fetch_assoc()) {
+	array_push($prices, $row['price']);
+	array_push($stocks, $row['stock']);
+	array_push($prices_name, 'price_'.$row['p_id']);
+	array_push($stocks_name, 'stock_'.$row['p_id']);
 	echo '<tr onclick="goto_product_page(' . $row['p_id'] . ')">
 		<td style="width: 10%">' . '<img src="'.$row['image'].'">' . '</td>
 		<td><h1>' . $row['name'] . '</h1><hr>
 		<h3>' . $row['description'] . '</h3></td>
 		<td style="width:20%; vertical-align: middle; text-align: center;">
-		<div class="form-group" id="price_'.$row['p_id'].'">
+		<div class="form-group">
 			<h3>Price:</h3>
-			<input type="number" class="form-control" placeholder="'.$row['price'].'"
+			<input type="number" name="price_'.$row['p_id'].'" class="form-control" placeholder="'.$row['price'].'"
 		</div>
-		<div class="form-group" id="stock_'.$row['p_id'].'">
+		<div class="form-group">
 			<h3>Stock:</h3>
-			<input type="number" class="form-control" placeholder="'.$row['stock'].'"
+			<input type="number" name="stock_'.$row['p_id'].'" class="form-control" placeholder="'.$row['stock'].'"
 		</div>
 		</tr>';
 };
 ?>
+			<button type="submit" class="btn btn-primary btn-lg" style="position: absolute; right: 10px; bottom: 10px;">Submit Changes</button>
 			</form>
+
+<!-- Update database -->
+
+<script>
+
+function updatePlacholder(id, val){
+	console.log(id);
+	console.log(val);
+	document.getElementsByName(id)[0].placeholder=val;
+}
+
+</script>
+<?php
+
+	/*
+	 * For each value in prices array there will be a value
+	 * in the stocks array, the index in array will match the
+	 * p_id for the product.
+	 */
+
+	$products = count($prices);
+for($i = 0; $i < $products; $i++) {
+	//if($_POST[$price_name[$i]]dd
+	$price_name = 'price_'.$i;
+	$stock_name = 'stock_'.$i;
+	if($_POST[$price_name] != $prices[$i] && $_POST[$price_name] != "" && $_POST[$price_name] >= 0) {
+		$sql = "UPDATE product SET price = ".$_POST[$price_name]." WHERE p_id = $i";
+		$res = $conn->query($sql);
+		$new = $_POST[$price_name];
+		echo "<script>updatePlacholder('$price_name', $new)</script>";
+	}
+	if($_POST[$stock_name] != $stocks[$i] && $_POST[$stock_name] != "" && $_POST[$stock_name] >= 0) {
+		$sql = "UPDATE product SET stock = ".$_POST[$stock_name]." WHERE p_id = $i";
+		$res = $conn->query($sql);
+		$new = $_POST[$stock_name];
+		echo "<script>updatePlacholder('$stock_name', $new)</script>";
+	}
+}
+
+?>
+
 			</div>
 		</div>
 	</div>
