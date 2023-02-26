@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 
+<?php
+	session_start();
+?>
+
 <html>
 
     <title>We have stones</title>
@@ -69,13 +73,13 @@
                     <h1>SignUp</h1>
                     <form method="post">
                         <div class="text_line">
-                            <input type="Username" required />
+                            <input type="Username" name="username" required />
                             <span></span>
                             <label>Username</label>
                         </div>
 
                         <div class="text_line">
-                            <input type="password" required />
+                            <input type="password" name="password" required />
                             <span></span>
                             <label>Password</label>
                         </div>
@@ -84,5 +88,50 @@
                 </div>
             </div>
         </div>
+
+<?php 
+        $user="admin";
+        $password="1234";
+        $database="stonebase";
+        $table="product";
+
+        $server="localhost";
+
+        $conn = new mysqli($server, $user, $password, $database);
+        if($conn->connect_error){
+                die("connection failed: " . $conn->connect_error);
+        }
+
+	$username = $_POST['username'];
+	$pass = $_POST['password'];
+
+	/* Check if username exists in user table*/
+	$sql = "SELECT u_name FROM user WHERE u_name='$username'";
+	$res = $conn->query($sql);
+
+	if(($username != "" && $pass != "") && (mysqli_num_rows($res) == 0)){
+
+		/* A loop to check which u_id that is availible, if available insert username*/
+		$i = 0;
+		$sql2 = "SELECT u_id FROM user WHERE u_id='$i'";
+		$res2 = $conn->query($sql2);
+
+		while(mysqli_num_rows($res2) != 0 ) {
+			$i = $i + 1;
+			$sql2 = "SELECT u_id FROM user WHERE u_id='$i'";
+	                $res2 = $conn->query($sql2);
+		}
+		/* Can add numbers as username but not characters right now*/
+		$sql3 = "INSERT INTO user VALUES ($i, '$username', '$pass')";
+		$res3 = $conn->query($sql3);
+
+		/* Change alerts to real popup windows to look better */
+		echo '<script> alert("A user has now been added"); </script>';
+
+	} else if(mysqli_num_rows($res) > 0) {
+		echo '<script> alert("Inserted username is already taken"); window.location="/register_account.php" </script>';	/* print out that username is already taken*/
+	}
+
+?>
     </body>
 </html>
