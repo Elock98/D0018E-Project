@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 
+<?php
+	session_start();
+?>
+
 <html>
 
     <title>We have stones</title>
@@ -15,6 +19,10 @@
 
         <!-- Latest compiled JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+        <?php
+            session_start();
+        ?>
     </head>
 
     <body>
@@ -72,9 +80,29 @@
                 die("Connection failed: " . $conn->connect_error);
             }
 
-            $pid=$_GET["pid"];
+            $p_id=$_GET["pid"];
 
-            $sql = "SELECT * FROM product WHERE p_id = $pid";
+            $error_msg="";
+            $succ_msg="";
+            if(isset($_POST['add'])) {
+                if(isset($_SESSION['u_id'])) {
+                    $u_id=$_SESSION['u_id'];
+
+                    $sql = "SELECT * FROM shopping_cart WHERE c_id = '$u_id' AND p_id = '$p_id'";
+                    $res = $conn->query($sql);
+                    if(mysqli_num_rows($res) >= 1){
+                        $error_msg="Product already in cart";
+                    } else{
+                        $sql = "INSERT INTO shopping_cart (c_id, p_id, quantity) VALUES ($u_id, $p_id, 1)";
+                        $result = $conn->query($sql);
+                        $succ_msg="Product added to cart";
+                    }
+                } else {
+                    $error_msg="Please login";
+                }
+            }
+
+            $sql = "SELECT * FROM product WHERE p_id = $p_id";
 
             $result = $conn->query($sql);
 
@@ -87,10 +115,13 @@
                 <h3>' . $row['description'] . '</h3></td>
                 <td style="width:20%; vertical-allign: middle; text-allign: center;"><h2>' . $row['price'] . ' kr</h2>
                 <h2>' . $row['stock'] . ' in stock</h2>
-                <button type="button">Add to cart</button></td>
+                <form method="post">
+                    <input type="submit" name="add" value="Add to cart"/>
+                </form>
+                <h4 style="color:red">' . $error_msg . '</h4>
+                <h4 style="color:green">' . $succ_msg . '</h4></td>
 
             </tr>';
         ?>
-
     </body>
 </html>

@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 
+<?php
+	session_start();
+?>
+
 <html>
 
     <title>We have stones</title>
@@ -81,7 +85,7 @@
                         </div>
                         <input type="submit" value="SignIn" />
                         <div class="SignUp">
-                            If not a member? <a href="register_account.html">SignUp</a>
+                            If not a member? <a href="register_account.php">SignUp</a>
                         </div>
                     </form>
                 </div>
@@ -93,7 +97,6 @@ function go_home(){
         window.location.href = "index.php";
 }
 </script>
-
 
 <?php
 	$user="admin";
@@ -114,15 +117,23 @@ function go_home(){
 	$username = $_POST['username'];
 	$pass_input = $_POST['password'];
 
-	$sql = "SELECT u_name, u_password  FROM user WHERE u_name='$username' AND u_password='$pass_input'";
+	$sql = "SELECT u_id FROM user WHERE u_name='$username' AND u_password='$pass_input'";
 	$res = $conn->query($sql);
 
 	if(mysqli_num_rows($res) == 1){
+		$row=$res->fetch_assoc();
+		$u_id=$row["u_id"];
+		$_SESSION["u_id"]=$u_id;
+
 		echo '<script type="text/javascript">',
 			'go_home();',
 			'</script>';
-	} else{
+
+	/* Works but could make the message look better*/
+	} else if($username != "" || $pass_input != ""){
+		echo '<script> alert("wrong password or username"); window.location="/login.php" </script>';
 	}
+
 
 ?>
 
