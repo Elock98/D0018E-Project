@@ -82,8 +82,12 @@ CREATE TABLE `order_item` (
   `o_id` int NOT NULL,
   `p_id` int NOT NULL,
   `quantity` int NOT NULL,
-  PRIMARY KEY (`o_id`),
-  CONSTRAINT `o_id` FOREIGN KEY (`o_id`) REFERENCES `orders` (`o_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  `entry` int NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`entry`),
+  KEY `p_id_idx` (`p_id`),
+  KEY `o_id_idx` (`o_id`),
+  CONSTRAINT `o_id` FOREIGN KEY (`o_id`) REFERENCES `orders` (`o_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `p_id2` FOREIGN KEY (`p_id`) REFERENCES `product` (`p_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -140,7 +144,7 @@ CREATE TABLE `product` (
   PRIMARY KEY (`p_id`),
   UNIQUE KEY `p_id_UNIQUE` (`p_id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -149,6 +153,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
+INSERT INTO `product` VALUES (1,50,10,'Doge','Dog','Images/doge.jpg'),(2,100,20,'Hellothere','Hello','Images/hellothere.jpg'),(3,200,15,'Gigachad','Giga','Images/gigachad.jpg');
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -218,4 +223,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-03 13:21:32
+-- Dump completed on 2023-03-07 14:20:17
