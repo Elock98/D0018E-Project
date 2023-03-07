@@ -103,7 +103,7 @@ if(!isset($_SESSION["u_id"])){
             </div>
         </nav>
 
-        <div class="container" style="padding-top:100px;">
+        <div class="container" style="padding-top:50px;">
             <div class="panel panel-default">
                 <div class="panel-body">
 <?php
