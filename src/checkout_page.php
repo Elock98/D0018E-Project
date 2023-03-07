@@ -1,5 +1,14 @@
 <!DOCTYPE html>
 
+<?php
+    session_start();
+    if(isset($_SESSION['redirect'])) {
+        unset($_SESSION['redirect']);
+        header("Location: index.php");
+        die();
+    }
+?>
+
 <html>
 
     <title>We have stones</title>
@@ -15,10 +24,6 @@
 
         <!-- Latest compiled JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
-        <?php
-            session_start();
-        ?>
     </head>
 
     <body>
@@ -102,6 +107,30 @@
                 echo '<form method="post">
                         <input type="submit" name="order" value="Order"/>
                     </form>';
+
+		        if(isset($_POST['order'])) {
+                    $createOrder="INSERT INTO orders (u_id, order_date) values ('$u_id', now())";
+                    $conn->query($createOrder);
+
+                    $getOrderID="SELECT o_id FROM orders WHERE u_id = $u_id";
+                    $result=$conn->query($getOrderID);
+                    $order_id=-1;
+                    while($res = $result->fetch_assoc()) { if ($order_id < $res['o_id']) { $order_id = $res['o_id']; } }
+                    
+		            $result=$conn->query($sql);
+              	    while($res = $result->fetch_assoc()) {
+                        $p_id=$res['p_id'];
+                     	$orderItem="INSERT INTO order_item (o_id, p_id, quantity) values ($order_id, $p_id, 1)";
+                        $conn->query($orderItem);
+               	    }
+
+                    $clearShoppingCart="DELETE FROM shopping_cart WHERE c_id = $u_id";
+                    $conn->query($clearShoppingCart);
+
+                    
+                    $_SESSION['redirect'] = 1;
+                    echo "<script>location.reload()</script>";
+                } 
             }
         ?>
 
