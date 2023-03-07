@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 // From: stackoverflow.com/qusetions/1280767/how-i-run-php-code-when-a-user-clicks-on-a-link
 $page = $_SERVER["PHP_SELF"];
 $file_name_begin_pos = strripos($page, "/");
@@ -137,7 +136,7 @@ if(!isset($_SESSION["u_id"])) {
 ?>
 
     <!-- Logged in as employee here -->
-    <div class="container" style="padding-top:100px;">
+    <div class="container" style="padding-top:50px;">
         <div class="panel panel-default">
         <div class="panel-body">
         <form method="post">
