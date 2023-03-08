@@ -91,6 +91,15 @@ if(!isset($_SESSION["u_id"])){
                         <li><a href="restock_page.php"><span class="glyphicon glyphicon-list-alt"></span> Manage products</a></li>
 <?php
     }
+    $sql = "SELECT * FROM employee WHERE u_id='$u_id' AND is_manager=1";
+
+    $res = $conn->query($sql);
+
+    if(mysqli_num_rows($res) != 0){
+?>
+                        <li class="inactive"><a href="manager_page.php">Manage employees <span class="sr-only">(current)</a></li>
+<?php
+    }
 ?>
                         <li class="active"><a href="checkout_page.php"><span class="glyphicon glyphicon-shopping-cart"></span> Cart <span class="sr-only">(current)</a></li>
                         <li><a href="user_account_page.php"><span class="glyphicon glyphicon-user"></span> Account</a></li>
