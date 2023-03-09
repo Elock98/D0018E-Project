@@ -44,7 +44,7 @@ $file_name = substr($page, ++$fileNamePos);
                     <!--Navigation buttons-->
                     <div class="navbar-nav navbar-left">
                         <ul class="nav navbar-nav">
-                            <li class="active"><a href="index.php">Home <span class="sr-only">(current)</a></li>
+                            <li class="inactive"><a href="index.php">Home <span class="sr-only">(current)</a></li>
                         </ul>
                     </div>
                     <!--Search bar-->
@@ -80,27 +80,18 @@ if(!isset($_SESSION["u_id"])){
     }
 
     $u_id = $_SESSION["u_id"];
-    $sql = "SELECT * FROM employee WHERE u_id='$u_id'";
-
-    $res = $conn->query($sql);
-
-    if(mysqli_num_rows($res) != 0){
-        // If logged in as employee
-
-?>
-                        <li><a href="restock_page.php"><span class="glyphicon glyphicon-list-alt"></span> Manage products</a></li>
-<?php
-    }
     $sql = "SELECT * FROM employee WHERE u_id='$u_id' AND is_manager=1";
 
     $res = $conn->query($sql);
 
     if(mysqli_num_rows($res) != 0){
-?>
+        // If logged in as manager
 
-                        <li class="inactive"><a href="manager_page.php">Manage employees <span class="sr-only">(current)</a></li>
+?>
+                        <li><a href="restock_page.php"><span class="glyphicon glyphicon-list-alt"></span> Manage products</a></li>
+                        <li class="active"><a href="manager_page.php">Manage employees <span class="sr-only">(current)</a></li>
 <?php
-    }
+    } else { die("Not logged in as manager!"); }
 ?>
                         <li><a href="checkout_page.php"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a></li>
                         <li><a href="user_account_page.php"><span class="glyphicon glyphicon-user"></span> Account</a></li>
@@ -113,9 +104,43 @@ if(!isset($_SESSION["u_id"])){
             </div>
         </nav>
 
+<?php
+if(!isset($_SESSION["u_id"])) {
+    echo '<div class="container" style="padding-top:50px;">
+        <h1 style="align: center;"> YOU ARE NOT AN EMPLOYEE </h1>
+        </div>';
+    die("Not logged in as an employee");
+}else{
+    /*Connect to db*/
+    $user = "admin";
+    $password="1234";
+    $database="stonebase";
+    $server="localhost";
+
+    $conn = new mysqli($server, $user, $password, $database);
+    if($conn->connect_error){
+        die("Connection to database failed: " . $conn->connect_error);
+    }
+
+    $u_id = $_SESSION["u_id"];
+    $sql = "SELECT * FROM employee WHERE u_id='$u_id'";
+
+    $res = $conn->query($sql);
+
+    if(mysqli_num_rows($res) == 0) {
+        echo '<div class="container" style="padding-top:50px;">
+            <h1 style="align: center;"> YOU ARE NOT AN EMPLOYEE </h1>
+            </div>';
+    die("Not logged in as an employee");
+    }
+
+}
+
+?>
         <div class="container" style="padding-top:50px;">
             <div class="panel panel-default">
                 <div class="panel-body">
+                    <form method="post">
 <?php
 	$user="admin";
 	$password="1234";
@@ -127,31 +152,64 @@ if(!isset($_SESSION["u_id"])){
 		die("Connection failed: " . $conn->connect_error);
 	}
 
-	$sql = "SELECT * FROM product";
+	$sql = "SELECT * FROM employee";
 
 	$result = $conn->query($sql);
 
+    $salary_id = array();
+    $salary = array();
+
         echo '<table class="table table-bordered table-responsive table-hover table-cursor" cellpadding="0">';
 	while($row = $result->fetch_assoc()) {
-        echo '<tr onclick="goto_product_page(' . $row['p_id'] . ')">
-                <td style="width: 10%">' . '<img src="'.$row['image'].'">' . '</td>
-                <td><h1>' . $row['name'] . '</h1><hr>
-                <h3>' . $row['description'] . '</h3></td>
-                <td style="width:20%; vertical-align: middle; text-align: center;">
-                <h2>' . $row['price'] . ' kr</h2>
-                <h2>' . $row['stock'] . ' in stock</h2></td>
+        array_push($salary_id, $row['u_id']);
+        array_push($salary, $row['salery']);
+        echo '<tr>
+                <td><h3>' . $row['f_name'] . ' ' . $row['l_name'] .'</h3></td>
+                <td><div class="form-group">
+                    <h3>Salary:</h3>
+                    <input type="number" name="salery_'.$row['u_id'].'" class="form-control" placeholder="'.$row['salery'].'">
+                </div></td>
             </tr>';
 	};
+echo '<tr><td><button type="submit" class="btn btn-primary btn-lg" >Submit Changes</button></td></tr></table>';
 
 ?>
+
+<!-- Update salary placeholder -->
+<script>
+
+function updatePlacholder(id, val){
+    console.log(id);
+    console.log(val);
+    document.getElementsByName(id)[0].placeholder=val;
+}
+
+</script>
+                    </form>
                 </div>
             </div>
         </div>
+<!-- Update salary in db -->
+
+<?php
+    // Get number of employees
+    $emp_count = count($salary_id);
+
+    // For each employee, check if salary is updated
+    for($i = 0; $i < $emp_count; $i++) {
+        $inp_field = 'salery_'.$salary_id[$i];
+        if($_POST[$inp_field] != $salary[$i] &&
+            $_POST[$inp_field] != "" &&
+            $_POST[$inp_field] > 0) {
+            // Update the salary for employee
+            $sql = "UPDATE employee SET salery = ".$_POST[$inp_field]." WHERE u_id = ".$salary_id[$i];
+            echo $salary_id[$i];
+        $res = $conn->query($sql);
+        $new = $_POST[$inp_field];
+        echo "<script>updatePlacholder('$inp_field', $new)</script>";
+        }
+    }
+?>
     </body>
-	<script>
-		function goto_product_page(id) {
-			window.location.href = "product_page.php?pid=" + id;
-		}
-	</script>
 </html>
 
