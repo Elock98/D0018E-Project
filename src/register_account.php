@@ -2,6 +2,10 @@
 
 <?php
 	session_start();
+// From: stackoverflow.com/qusetions/1280767/how-i-run-php-code-when-a-user-clicks-on-a-link
+$page = $_SERVER["PHP_SELF"];
+$file_name_begin_pos = strripos($page, "/");
+$file_name = substr($page, ++$fileNamePos);
 ?>
 
 <html>
@@ -24,6 +28,7 @@
     <body>
         <!---Navbar--->
         <nav class="navbar navbar-inverse navbar-fixed-top">
+	       <a class="navbar-brand" href="">MemeStones</a>
             <div class="container">
                 <!---make "container-fluid" if needed more space--->
                 <!---Make collapsable--->
@@ -34,15 +39,13 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a href="" class="navbar-brand navbar-left"><img src="img/header-icon.jpeg"></a>
                 </div>
                 <!---Collapsable navbar--->
                 <div class="collapse navbar-collapse" id="page_header">
                     <!--Navigation buttons-->
                     <div class="navbar-nav navbar-left">
                         <ul class="nav navbar-nav">
-                            <li class="inactive"><a href="index.html">Home <span class="sr-only">(current)</a></li>
-                            <li class="inactive"><a href="about.html">About <span class="sr-only">(current)</a></li>
+                            <li class="inactive"><a href="index.php">Home <span class="sr-only">(current)</a></li>
                         </ul>
                     </div>
                     <!--Search bar-->
@@ -59,7 +62,7 @@
                     <!--Accout related buttons-->
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="login.php"><span class="glyphicon glyphicon-log-in"></span> Sign in</a></li>
-                        <li><a href="register_account.html"><span class="glyphicon glyphicon-user"></span> Sign up</a></li>
+                        <li class="active"><a href="register_account.php"><span class="glyphicon glyphicon-user"></span> Sign up <span class="sr-only">(current)</a></li>
                     </ul>
                 </div>
             </div>
