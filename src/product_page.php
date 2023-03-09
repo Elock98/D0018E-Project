@@ -23,6 +23,37 @@
         <?php
             session_start();
         ?>
+
+        <style>
+            div { display: table; }
+            div.t {
+                display: table-cell;
+                width: 100%;
+            }
+            div.l {
+                display: table-cell;
+                width: 6%;
+            }
+            div.r {
+                display: table-cell;
+                width: 5%;
+            }
+            div.l > label {
+                padding-left: 10%;
+                width: 5%;
+            }
+            div.t > input {
+                width: 100%;
+            }
+            div.r > input {
+                /*padding-right: 5%;*/
+                width: 100%;
+            }
+
+            input[type='number']{
+                width: 40px;
+            } 
+        </style>
     </head>
 
     <body>
@@ -122,6 +153,47 @@
                 <h4 style="color:green">' . $succ_msg . '</h4></td>
 
             </tr>';
+        ?>
+
+        <?php
+            $sql="SELECT * FROM Review";
+            $result = $conn->query($sql);
+
+            #$u_id=$row['u_id'];
+            #$sql2="SELECT u_name FROM Review where u_id = $u_id";
+            #$res=$conn->query($sql2);
+
+            
+            echo '<div><table class="table table-bordered table-responsive table-hover table-cursor" cellpadding="0">';
+            echo '<tr style="outline: thin solid">
+            <label for="fname">Comments</label>
+            </tr></div>';
+            
+            echo '<div style="width: 85%;">
+                <div class="l">
+                    <label for="fname">Rating: </label>
+                </div>
+                <div class="r">
+                    <input type="number" min="1" max="5" size="20"/>
+                    </div>
+                <div class="l">
+                    <label for="fname">Comment: </label>
+                </div>
+                <div class="t">
+                    <input type="text" minlength="4" maxlength="128" />
+                </div>
+                <form method="post">
+                    <input type="button" name="review" value="Add review" />
+                </form>
+            </div>';
+
+	        while($row = $result->fetch_assoc()) {
+                echo '<tr>
+                        <td><h1>' . $row['u_id'].u_name . '</h1>
+                        <h1>' . $row['score'] . ' / 5</h1>
+                        <h2>Comment</h2></td>
+                    </tr>';
+            };
         ?>
     </body>
 </html>
