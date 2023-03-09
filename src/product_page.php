@@ -28,10 +28,10 @@ $file_name = substr($page, ++$fileNamePos);
     <body>
         <!---Navbar--->
         <nav class="navbar navbar-inverse navbar-fixed-top">
+           <a class="navbar-brand" href="">MemeStones</a>
             <div class="container"> <!---make "container-fluid" if needed more space--->
                 <!---Make collapsable--->
                 <div class="navbar-header">
-                   <a class="navbar-brand" href="">MemeStones</a>
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#page_header" aria-expanded="false" aria-controls="navbar">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
