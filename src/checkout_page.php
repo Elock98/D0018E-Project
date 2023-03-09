@@ -1,5 +1,16 @@
 <?php
-session_start();
+    session_start();
+    if(isset($_SESSION['redirect'])) {
+        unset($_SESSION['redirect']);
+        header("Location: index.php");
+        die();
+    }
+    if(isset($_SESSION['cart_update'])) {
+	unset($_SESSION['cart_update']);
+	unset($_POST);
+	header("Location: checkout_page.php");
+	die();
+    }
 
 // From: stackoverflow.com/qusetions/1280767/how-i-run-php-code-when-a-user-clicks-on-a-link
 $page = $_SERVER["PHP_SELF"];
@@ -60,6 +71,7 @@ $file_name = substr($page, ++$fileNamePos);
                     </div>
                     <!--Accout related buttons-->
                     <ul class="nav navbar-nav navbar-right">
+                    
 <?php
 if(!isset($_SESSION["u_id"])){
     //If not logged in
@@ -103,5 +115,115 @@ if(!isset($_SESSION["u_id"])){
             </div>
         </nav>
 
+        <?php
+            ini_set('display_errors', 1);
+            $user="admin";
+            $password="1234";
+            $database="stonebase";
+            $server="localhost";
+
+            $conn = new mysqli($server, $user, $password, $database);
+            if($conn->connect_error){
+                die("Connection failed: " . $conn->connect_error);
+            }
+
+            $p_id_array = array();
+            $quantity_array = array();
+
+            if(isset($_SESSION['u_id'])) {
+                $u_id=$_SESSION['u_id'];
+
+                $sql = "SELECT * FROM product INNER JOIN shopping_cart ON shopping_cart.c_id = '$u_id' WHERE product.p_id = shopping_cart.p_id";
+                $result = $conn->query($sql);
+
+                if($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    /* Make loop through all p_ids*/
+                    $quantity_array = $_SESSION['quantity_array'];
+                    $p_id_array = $_SESSION['p_id_array'];
+                    $p_id_num = count($p_id_array);
+
+                    for($i = 0; $i < $p_id_num; $i++) {
+                        if(isset($_POST['decrease_'.$p_id_array[$i]])) {
+
+                            if($quantity_array[$i] > 0){
+                                $sql = "UPDATE shopping_cart SET quantity =".($quantity_array[$i] - 1)." WHERE p_id =".$p_id_array[$i]."" ;
+                                $res = $conn->query($sql);
+                                $_SESSION['cart_update'] = 1;
+                            }
+                        }
+
+                        if(isset($_POST['increase_'.$p_id_array[$i]])) {
+                            $sql = "UPDATE shopping_cart SET quantity =".($quantity_array[$i] + 1)." WHERE p_id =".$p_id_array[$i]."" ;
+                            $res = $conn->query($sql);
+                            $_SESSION['cart_update'] = 1;
+                        }
+                    }
+
+                        /* reset post after loop, reset post variable*/
+                }
+                $p_id_array = array();
+                $quantity_array = array();
+
+                echo '<table class="table table-bordered table-responsive" cellpadding="0">';
+                while($row = $result->fetch_assoc()) {
+                    /* add p_id to fill the p_id array*/
+                    array_push($p_id_array, $row['p_id']);
+                    array_push($quantity_array, $row['quantity']);
+                    echo '<form method="post">
+                           <tr>
+                            <td style="width: 10%">' . '<img src="'.$row['image'].'">' . '</td>
+                            <td><h1>' . $row['name'] . '</h1><hr>
+                            <h2>Quantity:
+			    <button type="submit" name="decrease_'.$row['p_id'].'" value="decrease"
+		            class="quantity-button decrease-button"
+           		    title="minus">-</button>
+
+			    ' . $row['quantity'] .'
+ 		            <button type="submit" name="increase_'.$row['p_id'].'" value="increase"
+           		    class="quantity-button increase-button"
+      			    title="plus">+</button>
+
+			    </h2></td>
+                            <td style="width:20%; vertical-align: middle; text-align: center;">
+                            <h2>' . $row['price'] . ' kr</h2></td>
+                        </tr>
+                        </form>';
+                };
+                $_SESSION['quantity_array'] = $quantity_array;
+                $_SESSION['p_id_array'] = $p_id_array;
+
+                echo '<form method="post">
+                        <input type="submit" name="order" value="Order"/>
+                    </form>';
+
+		        if(isset($_POST['order'])) {
+                    $createOrder="INSERT INTO orders (u_id, order_date) values ('$u_id', now())";
+                    $conn->query($createOrder);
+
+                    $getOrderID="SELECT o_id FROM orders WHERE u_id = $u_id";
+                    $result=$conn->query($getOrderID);
+                    $order_id=-1;
+                    while($res = $result->fetch_assoc()) { if ($order_id < $res['o_id']) { $order_id = $res['o_id']; } }
+                    
+		            $result=$conn->query($sql);
+              	    while($res = $result->fetch_assoc()) {
+                        $p_id=$res['p_id'];
+                     	$orderItem="INSERT INTO order_item (o_id, p_id, quantity) values ($order_id, $p_id, 1)";
+                        $conn->query($orderItem);
+               	    }
+
+                    $clearShoppingCart="DELETE FROM shopping_cart WHERE c_id = $u_id";
+                    $conn->query($clearShoppingCart);
+
+                    
+                    $_SESSION['redirect'] = 1;
+                    echo "<script>location.reload()</script>";
+                } 
+            }
+        ?>
+
+	<!-- onclick ska ett sql skickas till databasen med update kommando.
+	     quantiteten i shopping_cart ska ökas eller minskas med ett.
+	      -->
     </body>
 </html>
