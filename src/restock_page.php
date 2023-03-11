@@ -166,8 +166,8 @@ while($row = $res->fetch_assoc()) {
     array_push($p_ids, $row['p_id']);
     echo '<tr>
         <td style="width: 10%">' . '<img src="'.$row['image'].'">' . '</td>
-        <td><h1>' . $row['name'] . '</h1><hr>
-        <h3>' . $row['description'] . '</h3></td>
+        <td><h1><div class="form-group"><input type="text" name="name_'.$row['p_id'].'" class="form-control" placeholder="'.$row['name'].'"></div></h1><hr>
+        <h3><div class="form-group"><textarea style="resize: none;" rows="4" cols="20" name="description_'.$row['p_id'].'" class="form-control" placeholder="'.$row['description'].'"></textarea></div></h3></td>
         <td style="width:20%; vertical-align: middle; text-align: center;">
         <div class="form-group">
         <h3>Price:</h3>
@@ -211,9 +211,10 @@ function updatePlacholder(id, val){
 <?php
 
 /*
- * For each value in prices array there will be a value
- * in the stocks array, the index in array will match the
- * p_id for the product.
+ * For each of the products we know the id of each
+ * update field. Using this we can check if it has
+ * been updated and if this is true we can attempt
+ * to update the database using the p_id.
  */
 
 $products = count($prices);
@@ -233,6 +234,18 @@ for($i = 0; $i < $products; $i++) {
         $res = $conn->query($sql);
         $new = $_POST[$stock_name];
         echo "<script>updatePlacholder('$stock_name', $new)</script>";
+    }
+    if($_POST[$name_name] != $names[$i] && $_POST[$name_name] != "") {
+        $sql = "UPDATE product SET name = '".$_POST[$name_name]."' WHERE p_id = ".$p_ids[$i];
+        $res = $conn->query($sql);
+        $new = $_POST[$name_name];
+        echo "<script>updatePlacholder('$name_name', '$new')</script>";
+    }
+    if($_POST[$desc_name] != $names[$i] && $_POST[$desc_name] != "") {
+        $sql = "UPDATE product SET description = '".$_POST[$desc_name]."' WHERE p_id = ".$p_ids[$i];
+        $res = $conn->query($sql);
+        $new = $_POST[$desc_name];
+        echo "<script>updatePlacholder('$desc_name', '$new')</script>";
     }
 }
 
