@@ -156,16 +156,14 @@ $sql = "SELECT * FROM product";
 $res = $conn->query($sql);
 
 $prices = array();
-$prices_name = array();
 $stocks = array();
-$stocks_name = array();
+$p_ids = array();
 
 echo '<table class="table table-bordered table-responsive table-hover table-cursor" cellpadding="0">';
 while($row = $res->fetch_assoc()) {
     array_push($prices, $row['price']);
     array_push($stocks, $row['stock']);
-    array_push($prices_name, $row['p_id']);
-    array_push($stocks_name, $row['p_id']);
+    array_push($p_ids, $row['p_id']);
     echo '<tr>
         <td style="width: 10%">' . '<img src="'.$row['image'].'">' . '</td>
         <td><h1>' . $row['name'] . '</h1><hr>
@@ -220,16 +218,18 @@ function updatePlacholder(id, val){
 
 $products = count($prices);
 for($i = 0; $i < $products; $i++) {
-    $price_name = 'price_'.$prices_name[$i];
-    $stock_name = 'stock_'.$stocks_name[$i];
+    $price_name = 'price_'.$p_ids[$i];
+    $stock_name = 'stock_'.$p_ids[$i];
+    $name_name = 'name_'.$p_ids[$i];
+    $desc_name = 'description_'.$p_ids[$i];
     if($_POST[$price_name] != $prices[$i] && $_POST[$price_name] != "" && $_POST[$price_name] >= 0) {
-        $sql = "UPDATE product SET price = ".$_POST[$price_name]." WHERE p_id = ".$prices_name[$i];
+        $sql = "UPDATE product SET price = ".$_POST[$price_name]." WHERE p_id = ".$p_ids[$i];
         $res = $conn->query($sql);
         $new = $_POST[$price_name];
         echo "<script>updatePlacholder('$price_name', $new)</script>";
     }
     if($_POST[$stock_name] != $stocks[$i] && $_POST[$stock_name] != "" && $_POST[$stock_name] >= 0) {
-        $sql = "UPDATE product SET stock = ".$_POST[$stock_name]." WHERE p_id = ".$stocks_name[$i];
+        $sql = "UPDATE product SET stock = ".$_POST[$stock_name]." WHERE p_id = ".$p_ids[$i];
         $res = $conn->query($sql);
         $new = $_POST[$stock_name];
         echo "<script>updatePlacholder('$stock_name', $new)</script>";
