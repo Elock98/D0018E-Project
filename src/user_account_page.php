@@ -122,16 +122,23 @@ if(!isset($_SESSION["u_id"])){
         <!-- Purchase history -->
         <div class="col-md-6">
         <h2>Purchase history:</h2>
+        <table class="table table-bordered table-responsive" cellpadding="0">
+            <tr>
+                <td style="width: 35%"><b>Order date:</b></td>
+                <td><b>Product:</b></td>
+                <td style="width: 20%"><b>Quantity:</b></td>
+            </tr>
+        </table>
+        <div style="overflow-y: scroll; height:75vh;">
 <?php
 
-    $sql = "SELECT * FROM orders WHERE u_id='$u_id'";
+    $sql = "SELECT * FROM orders WHERE u_id='$u_id' ORDER BY o_id DESC";
 
     $orders = $conn->query($sql);
 
-    echo '<table class="table table-bordered table-responsive" cellpadding="0">';
 
     while($order = $orders->fetch_assoc()) {
-        echo '<tr>';
+        echo '<table class="table table-bordered table-responsive" cellpadding="0">';
         $sql = "SELECT order_item.quantity, product.name
                 FROM order_item
                 INNER JOIN product ON order_item.p_id=product.p_id
@@ -139,15 +146,17 @@ if(!isset($_SESSION["u_id"])){
                 ";
         $items = $conn->query($sql);
         while($item = $items->fetch_assoc()) {
-            echo '<td>'.$order['order_date'].'</td>
+            echo '<tr>';
+            echo '<td style="width: 35%">'.$order['order_date'].'</td>
                   <td>'.$item['name'].'</td>
-                  <td>'.$item['quantity'].'</td>';
+                  <td style="width: 20%; vertical-align: middle; text-align: center;">'.$item['quantity'].'</td>';
+            echo '</tr>';
         }
-        echo '</tr>';
+        echo '</table>';
     }
-    echo '</table>';
 
 ?>
+        </div>
         </div>
         <style>
             .vertical_line {
