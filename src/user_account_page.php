@@ -167,13 +167,24 @@ if(!isset($_SESSION["u_id"])){
             }
         </style>
         <!-- Account info -->
-        <div class="col-md-6 vertical_line">
+        <div class="col-md-6 vertical_line" style="vertical-align: middle; text-align: center;">
         <h2>Account info:</h2>
 <?php
     $sql = "SELECT * from user where u_id=".$u_id;
     $user_data = $conn->query($sql);
     while($user = $user_data->fetch_assoc()) {
-        echo '<h2>Username: '.$user['u_name'].'</h2>';
+        echo '<h3>Username: '.$user['u_name'].'</h3>';
+        echo '<h3>Name: '.$user['f_name'].' '.$user['l_name'].'</h3>';
+        echo '<h3>Email: '.$user['email'].'</h3>';
+
+        $sql = "SELECT * FROM employee WHERE u_id='$u_id'";
+
+        $res = $conn->query($sql);
+        if(mysqli_num_rows($res) != 0){
+            $emp = $res->fetch_assoc();
+            // The user is an employee, so display the salary
+            echo '<h3>Salary: '.$emp['salery'].'</h3>';
+        }
     }
 ?>
         </div>
