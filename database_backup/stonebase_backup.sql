@@ -26,6 +26,7 @@ CREATE TABLE `Review` (
   `u_id` int NOT NULL,
   `p_id` int NOT NULL,
   `score` int NOT NULL,
+  `comment` varchar(228) DEFAULT NULL,
   PRIMARY KEY (`u_id`),
   KEY `p_id_idx` (`p_id`),
   CONSTRAINT `p_id_review` FOREIGN KEY (`p_id`) REFERENCES `product` (`p_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
@@ -53,8 +54,6 @@ CREATE TABLE `employee` (
   `u_id` int NOT NULL,
   `salery` int DEFAULT NULL,
   `is_manager` tinyint DEFAULT NULL,
-  `f_name` varchar(32) DEFAULT NULL,
-  `l_name` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`u_id`),
   UNIQUE KEY `u_id_UNIQUE` (`u_id`),
   CONSTRAINT `u_id_employee` FOREIGN KEY (`u_id`) REFERENCES `user` (`u_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
@@ -67,7 +66,7 @@ CREATE TABLE `employee` (
 
 LOCK TABLES `employee` WRITE;
 /*!40000 ALTER TABLE `employee` DISABLE KEYS */;
-INSERT INTO `employee` VALUES (0,100000,1,'Elon','Musk'),(1,5,0,'Bob','Bob');
+INSERT INTO `employee` VALUES (0,100000,1),(1,8,0);
 /*!40000 ALTER TABLE `employee` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -83,12 +82,13 @@ CREATE TABLE `order_item` (
   `p_id` int NOT NULL,
   `quantity` int NOT NULL,
   `entry` int NOT NULL AUTO_INCREMENT,
+  `price` int NOT NULL,
   PRIMARY KEY (`entry`),
   KEY `p_id_idx` (`p_id`),
   KEY `o_id_idx` (`o_id`),
   CONSTRAINT `o_id` FOREIGN KEY (`o_id`) REFERENCES `orders` (`o_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `p_id2` FOREIGN KEY (`p_id`) REFERENCES `product` (`p_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -115,7 +115,7 @@ CREATE TABLE `orders` (
   UNIQUE KEY `o_id_UNIQUE` (`o_id`),
   KEY `u_id_idx` (`u_id`),
   CONSTRAINT `u_id` FOREIGN KEY (`u_id`) REFERENCES `user` (`u_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -124,6 +124,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+INSERT INTO `orders` VALUES (4,2,'2023-03-10 12:32:05.00'),(5,2,'2023-03-10 12:32:19.00'),(6,2,'2023-03-10 12:32:43.00'),(7,0,'2023-03-10 12:34:16.00'),(8,2,'2023-03-10 17:03:38.00');
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -144,7 +145,7 @@ CREATE TABLE `product` (
   PRIMARY KEY (`p_id`),
   UNIQUE KEY `p_id_UNIQUE` (`p_id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -153,7 +154,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES (1,50,10,'Doge','Dog','Images/doge.jpg'),(2,100,20,'Hellothere','Hello','Images/hellothere.jpg'),(3,200,15,'Gigachad','Giga','Images/gigachad.jpg');
+INSERT INTO `product` VALUES (1,500,0,'Doge','Dog','Images/doge.jpg'),(2,100,2,'Hellothere','Hello','Images/hellothere.jpg'),(3,200,15,'Gigachad','Giga','Images/gigachad.jpg'),(8,200,5,'Test','Test description','Images/hellothere.jpg');
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -175,7 +176,7 @@ CREATE TABLE `shopping_cart` (
   KEY `p_id_idx` (`p_id`),
   CONSTRAINT `c_id` FOREIGN KEY (`c_id`) REFERENCES `user` (`u_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `p_id` FOREIGN KEY (`p_id`) REFERENCES `product` (`p_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -184,6 +185,7 @@ CREATE TABLE `shopping_cart` (
 
 LOCK TABLES `shopping_cart` WRITE;
 /*!40000 ALTER TABLE `shopping_cart` DISABLE KEYS */;
+INSERT INTO `shopping_cart` VALUES (7,1,1,1),(14,2,1,1);
 /*!40000 ALTER TABLE `shopping_cart` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -198,6 +200,9 @@ CREATE TABLE `user` (
   `u_id` int NOT NULL,
   `u_name` varchar(32) NOT NULL,
   `u_password` varchar(128) NOT NULL,
+  `f_name` varchar(32) NOT NULL,
+  `l_name` varchar(32) NOT NULL,
+  `email` varchar(128) NOT NULL,
   PRIMARY KEY (`u_id`),
   UNIQUE KEY `u_id_UNIQUE` (`u_id`),
   UNIQUE KEY `u_name_UNIQUE` (`u_name`)
@@ -210,7 +215,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (0,'manager','test_password'),(1,'Bob','1234'),(2,'Ted','123'),(3,'Adam','12345');
+INSERT INTO `user` VALUES (0,'manager','test_password','Elon','Musk','EM@gmail.com'),(1,'Bob','1234','Bob','Bob','BB@gmail.com'),(2,'Ted','123','Ted ','Gson','TG@gmail.com');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -223,4 +228,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-07 14:20:17
+-- Dump completed on 2023-03-14 12:28:10
