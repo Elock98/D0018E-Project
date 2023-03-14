@@ -195,13 +195,8 @@ if(!isset($_SESSION["u_id"])){
         ?>
 
         <?php
-            $sql="SELECT * FROM Review";
+            $sql="SELECT * FROM review INNER JOIN user ON user.u_id = review.u_id WHERE p_id = $p_id";
             $result = $conn->query($sql);
-
-            #$u_id=$row['u_id'];
-            #$sql2="SELECT u_name FROM Review where u_id = $u_id";
-            #$res=$conn->query($sql2);
-
             
             echo '<div><table class="table table-bordered table-responsive table-hover table-cursor" cellpadding="0">';
             echo '<tr style="outline: thin solid">
@@ -213,26 +208,43 @@ if(!isset($_SESSION["u_id"])){
                     <label for="fname">Rating: </label>
                 </div>
                 <div class="r">
-                    <input type="number" min="1" max="5" size="20"/>
-                    </div>
+                <form method="post">
+                    <input type="number" name="rating" id="rating" min="1" max="5" size="20"/>
+                </div>
                 <div class="l">
                     <label for="fname">Comment: </label>
                 </div>
                 <div class="t">
-                    <input type="text" minlength="4" maxlength="128" />
+                <input type="text" name="comment" id="comment" minlength="4" maxlength="128" />
                 </div>
-                <form method="post">
-                    <input type="button" name="review" value="Add review" />
+                    <input type="submit" name="review" value="Add review" />
                 </form>
             </div>';
 
 	        while($row = $result->fetch_assoc()) {
-                echo '<tr>
-                        <td><h1>' . $row['u_id'].u_name . '</h1>
-                        <h1>' . $row['score'] . ' / 5</h1>
-                        <h2>Comment</h2></td>
+                echo '<tr width="100%">
+                        <td width="15%"><p style="font-size:20px;line-height:0.5;padding-top:5px">' . $row['u_name'] . '</p></td>
+                        <td width="5%"><p style="font-size:20px;line-height:0.5;padding-top:5px">' . $row['score'] . ' / 5</p></td>
+                        <td width="80%"><p style="font-size:16px;line-height:0.5;padding-top:5px">' . $row['comment'] .'</p></td>
                     </tr>';
             };
+
+            if (isset($_POST['review']) && isset($_SESSION['u_id'])) {
+                $u_id=$_SESSION['u_id'];
+                $qry="SELECT * FROM order_item INNER JOIN orders ON orders.u_id = $u_id WHERE order_item.p_id = $p_id";
+                $orderCheck=$conn->query($qry);
+                $res=$orderCheck->fetch_all();
+                if (empty($res)) {
+                    echo '<h4 style="color:red">You have no past orders on this item</h4>';
+                } else {
+                    $rating=$_POST['rating'];
+                    $comment=$_POST['comment'];
+                    $review="INSERT INTO review (u_id, p_id, score, comment) VALUES ($u_id, $p_id, $rating, $comment)";
+                    $conn->query($review);
+                    echo "<script>location.reload()</script>";
+                }
+            }
+
         ?>
     </body>
 </html>
