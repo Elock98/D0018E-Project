@@ -127,6 +127,7 @@ if(!isset($_SESSION["u_id"])){
                 <td style="width: 35%"><b>Order date:</b></td>
                 <td><b>Product:</b></td>
                 <td style="width: 20%"><b>Quantity:</b></td>
+                <td style="width: 20%"><b>Price:</b></td>
             </tr>
         </table>
         <div style="overflow-y: scroll; height:75vh;">
@@ -139,7 +140,7 @@ if(!isset($_SESSION["u_id"])){
 
     while($order = $orders->fetch_assoc()) {
         echo '<table class="table table-bordered table-responsive" cellpadding="0">';
-        $sql = "SELECT order_item.quantity, product.name
+        $sql = "SELECT order_item.quantity, order_item.price, product.name
                 FROM order_item
                 INNER JOIN product ON order_item.p_id=product.p_id
                 WHERE o_id=".$order['o_id']."
@@ -149,7 +150,8 @@ if(!isset($_SESSION["u_id"])){
             echo '<tr>';
             echo '<td style="width: 35%">'.$order['order_date'].'</td>
                   <td>'.$item['name'].'</td>
-                  <td style="width: 20%; vertical-align: middle; text-align: center;">'.$item['quantity'].'</td>';
+                  <td style="width: 20%; vertical-align: middle; text-align: center;">'.$item['quantity'].'</td>
+                  <td style="width: 20%; vertical-align: middle; text-align: center;">'.$item['price'].'</td>';
             echo '</tr>';
         }
         echo '</table>';
