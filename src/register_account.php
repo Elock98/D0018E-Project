@@ -86,6 +86,25 @@ $file_name = substr($page, ++$fileNamePos);
                             <span></span>
                             <label>Password</label>
                         </div>
+
+			<div class="text_line">
+		            <input type="f_name" name="f_name" required />
+			    <span></span>
+			    <label>First name</label>
+			</div>
+
+                        <div class="text_line">
+                            <input type="l_name" name="l_name" required />
+                            <span></span>
+                            <label>Last name</label>
+                        </div>
+
+                        <div class="text_line">
+                            <input type="email" name="email" required />
+                            <span></span>
+                            <label>Email address</label>
+                        </div>
+
                         <input type="submit" value="SignUp" />
                     </form>
                 </div>
@@ -107,6 +126,9 @@ $file_name = substr($page, ++$fileNamePos);
 
 	$username = $_POST['username'];
 	$pass = $_POST['password'];
+	$f_name = $_POST['f_name'];
+	$l_name = $_POST['l_name'];
+	$email = $_POST['email'];
 
 	/* Check if username exists in user table*/
 	$sql = "SELECT u_name FROM user WHERE u_name='$username'";
@@ -125,7 +147,7 @@ $file_name = substr($page, ++$fileNamePos);
 	                $res2 = $conn->query($sql2);
 		}
 		/* Can add numbers as username but not characters right now*/
-		$sql3 = "INSERT INTO user VALUES ($i, '$username', '$pass')";
+		$sql3 = "INSERT INTO user VALUES ($i, '$username', '$pass', '$f_name', '$l_name', '$email')";
 		$res3 = $conn->query($sql3);
 
 		/* Change alerts to real popup windows to look better */
