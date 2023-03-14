@@ -16,34 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `Review`
---
-
-DROP TABLE IF EXISTS `Review`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Review` (
-  `u_id` int NOT NULL,
-  `p_id` int NOT NULL,
-  `score` int NOT NULL,
-  `comment` varchar(228) DEFAULT NULL,
-  PRIMARY KEY (`u_id`),
-  KEY `p_id_idx` (`p_id`),
-  CONSTRAINT `p_id_review` FOREIGN KEY (`p_id`) REFERENCES `product` (`p_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `u_id_review` FOREIGN KEY (`u_id`) REFERENCES `user` (`u_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Review`
---
-
-LOCK TABLES `Review` WRITE;
-/*!40000 ALTER TABLE `Review` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Review` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `employee`
 --
 
@@ -159,6 +131,36 @@ INSERT INTO `product` VALUES (1,500,0,'Doge','Dog','Images/doge.jpg'),(2,100,2,'
 UNLOCK TABLES;
 
 --
+-- Table structure for table `review`
+--
+
+DROP TABLE IF EXISTS `review`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `review` (
+  `u_id` int NOT NULL,
+  `p_id` int NOT NULL,
+  `entry` int NOT NULL AUTO_INCREMENT,
+  `rating` int NOT NULL,
+  `comment` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`entry`),
+  KEY `u_id_idx` (`u_id`),
+  KEY `p_id_idx` (`p_id`),
+  CONSTRAINT `p_id_review` FOREIGN KEY (`p_id`) REFERENCES `product` (`p_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `u_id_review` FOREIGN KEY (`u_id`) REFERENCES `user` (`u_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `review`
+--
+
+LOCK TABLES `review` WRITE;
+/*!40000 ALTER TABLE `review` DISABLE KEYS */;
+/*!40000 ALTER TABLE `review` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `shopping_cart`
 --
 
@@ -228,4 +230,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-14 12:28:10
+-- Dump completed on 2023-03-14 12:51:09
