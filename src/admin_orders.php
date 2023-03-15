@@ -112,7 +112,22 @@ if(!isset($_SESSION["u_id"])){
                 </div>
             </div>
         </nav>
+<?php
+    $u_id = $_SESSION["u_id"];
+    if(!isset($_SESSION["u_id"])) {
+        echo '<div class="container" style="padding-top:150px;">';
+        echo $u_id;
+        die("Not logged in as manager!");
+    }
+    $sql = "SELECT * FROM employee WHERE u_id='$u_id' AND is_manager=1";
 
+    $res = $conn->query($sql);
+
+    if(mysqli_num_rows($res) == 0 ){
+        echo '<div class="container" style="padding-top:150px;">';
+        die("Not logged in as manager!");
+    }
+?>
 <!-- Page body -->
 
 <div class="container" style="padding-top:50px;">
