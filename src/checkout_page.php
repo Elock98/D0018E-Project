@@ -207,6 +207,11 @@ if(!isset($_SESSION["u_id"])){
                     </form>';
 
 		        if(isset($_POST['order'])) {
+                    # Check stock
+                    $quantityOfProd=$conn->query("SELECT stock FROM product LEFT JOIN shopping_cart ON shopping_cart.c_id = '$u_id' WHERE product.p_id = shopping_cart.p_id");
+                    $i=0;
+                    while($res=$quantityOfProd->fetch_assoc()) { if($res['stock'] < $quantity_array[$i]) { echo "Quantity exceeds the current stock."; exit(0); } $i++; }
+
                     $createOrder="INSERT INTO orders (u_id, order_date) values ('$u_id', now())";
                     $conn->query($createOrder);
 
@@ -218,9 +223,21 @@ if(!isset($_SESSION["u_id"])){
 		            $result=$conn->query($sql);
               	    while($res = $result->fetch_assoc()) {
                         $p_id=$res['p_id'];
-                     	$orderItem="INSERT INTO order_item (o_id, p_id, quantity) values ($order_id, $p_id, 1)";
+                        $prod=$conn->query("SELECT * FROM shopping_cart INNER JOIN product ON product.p_id = $p_id WHERE shopping_cart.p_id = $p_id AND shopping_cart.c_id = $u_id");
+                        $res=$prod->fetch_assoc();
+                        $quantity=$res['quantity'];
+                        $price=$res['price'];
+
+                     	$orderItem="INSERT INTO order_item (o_id, p_id, quantity, price) values ($order_id, $p_id, $quantity, $price)";
                         $conn->query($orderItem);
                	    }
+
+                    $res=$conn->query($sql);
+                    while($r=$res->fetch_assoc()) {
+                        $newStock=$r['stock'] - $r['quantity'];
+                        $p_id=$r['p_id'];
+                        $conn->query("UPDATE product SET stock = $newStock WHERE p_id = $p_id");
+                    }
 
                     $clearShoppingCart="DELETE FROM shopping_cart WHERE c_id = $u_id";
                     $conn->query($clearShoppingCart);
