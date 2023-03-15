@@ -98,12 +98,13 @@ if(!isset($_SESSION["u_id"])){
     if(mysqli_num_rows($res) != 0){
 ?>
 
+                        <li class="active"><a href="admin_orders.php">View orders</a></li>
                         <li class="inactive"><a href="manager_page.php">Manage employees <span class="sr-only">(current)</a></li>
 <?php
     }
 ?>
                         <li><a href="checkout_page.php"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a></li>
-                        <li class="active"><a href="user_account_page.php"><span class="glyphicon glyphicon-user"></span> Account <span class="sr-only">(current)</a></li>
+                        <li class="inactive"><a href="user_account_page.php"><span class="glyphicon glyphicon-user"></span> Account <span class="sr-only">(current)</a></li>
                         <li><a href="logout.php?redirect_to=<?=$file_name?>"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
 <?php
 }

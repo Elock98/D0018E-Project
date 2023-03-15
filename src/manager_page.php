@@ -89,6 +89,7 @@ if(!isset($_SESSION["u_id"])){
 
 ?>
                         <li><a href="restock_page.php"><span class="glyphicon glyphicon-list-alt"></span> Manage products</a></li>
+                        <li class="inactive"><a href="admin_orders.php">View orders</a></li>
                         <li class="active"><a href="manager_page.php">Manage employees <span class="sr-only">(current)</a></li>
 <?php
     } else { die("Not logged in as manager!"); }

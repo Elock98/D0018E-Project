@@ -44,7 +44,7 @@ $file_name = substr($page, ++$fileNamePos);
                     <!--Navigation buttons-->
                     <div class="navbar-nav navbar-left">
                         <ul class="nav navbar-nav">
-                            <li class="active"><a href="index.php">Home <span class="sr-only">(current)</a></li>
+                            <li class="inactive"><a href="index.php">Home <span class="sr-only">(current)</a></li>
                         </ul>
                     </div>
                     <!--Search bar-->
@@ -104,7 +104,7 @@ if(!isset($_SESSION["u_id"])){
     }
 ?>
                         <li><a href="checkout_page.php"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a></li>
-                        <li><a href="user_account_page.php"><span class="glyphicon glyphicon-user"></span> Account</a></li>
+                        <li class="active"><a href="user_account_page.php"><span class="glyphicon glyphicon-user"></span> Account <span class="sr-only">(current)</a></li>
                         <li><a href="logout.php?redirect_to=<?=$file_name?>"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
 <?php
 }
@@ -114,45 +114,86 @@ if(!isset($_SESSION["u_id"])){
             </div>
         </nav>
 
-        <div class="container" style="padding-top:50px;">
-            <div class="panel panel-default">
-                <div class="panel-body">
+<!-- Page body -->
+
+<div class="container" style="padding-top:50px;">
+    <div class="panel panel-default">
+    <div class="panel-body" style="background-color: #f1f1f3;">
+    <div class="row">
+        <!-- Purchase history -->
+        <div class="col-md-6">
+        <h2>Purchase history:</h2>
+        <table class="table table-bordered table-responsive" cellpadding="0">
+            <tr>
+                <td style="width: 35%"><b>Order date:</b></td>
+                <td><b>Product:</b></td>
+                <td style="width: 20%"><b>Quantity:</b></td>
+                <td style="width: 20%"><b>Price:</b></td>
+            </tr>
+        </table>
+        <div style="overflow-y: scroll; height:75vh;">
 <?php
-	$user="admin";
-	$password="1234";
-	$database="stonebase";
-	$server="localhost";
 
-	$conn = new mysqli($server, $user, $password, $database);
-	if($conn->connect_error){
-		die("Connection failed: " . $conn->connect_error);
-	}
+    $sql = "SELECT * FROM orders WHERE u_id='$u_id' ORDER BY o_id DESC";
 
-	$sql = "SELECT * FROM product";
+    $orders = $conn->query($sql);
 
-	$result = $conn->query($sql);
 
-        echo '<table class="table table-bordered table-responsive table-hover table-cursor" cellpadding="0">';
-	while($row = $result->fetch_assoc()) {
-        echo '<tr onclick="goto_product_page(' . $row['p_id'] . ')">
-                <td style="width: 10%">' . '<img src="'.$row['image'].'">' . '</td>
-                <td><h1>' . $row['name'] . '</h1><hr>
-                <h3>' . $row['description'] . '</h3></td>
-                <td style="width:20%; vertical-align: middle; text-align: center;">
-                <h2>' . $row['price'] . ' kr</h2>
-                <h2>' . $row['stock'] . ' in stock</h2></td>
-            </tr>';
-	};
+    while($order = $orders->fetch_assoc()) {
+        echo '<table class="table table-bordered table-responsive" cellpadding="0">';
+        $sql = "SELECT order_item.quantity, order_item.price, product.name
+                FROM order_item
+                INNER JOIN product ON order_item.p_id=product.p_id
+                WHERE o_id=".$order['o_id']."
+                ";
+        $items = $conn->query($sql);
+        while($item = $items->fetch_assoc()) {
+            echo '<tr>';
+            echo '<td style="width: 35%">'.$order['order_date'].'</td>
+                  <td>'.$item['name'].'</td>
+                  <td style="width: 20%; vertical-align: middle; text-align: center;">'.$item['quantity'].'</td>
+                  <td style="width: 20%; vertical-align: middle; text-align: center;">'.$item['price'].'</td>';
+            echo '</tr>';
+        }
+        echo '</table>';
+    }
 
 ?>
-                </div>
-            </div>
         </div>
+        </div>
+        <style>
+            .vertical_line {
+                border-left: 2px solid lightgrey;
+                height: 85vh;
+            }
+        </style>
+        <!-- Account info -->
+        <div class="col-md-6 vertical_line" style="vertical-align: middle; text-align: center;">
+        <h2>Account info:</h2>
+<?php
+    $sql = "SELECT * from user where u_id=".$u_id;
+    $user_data = $conn->query($sql);
+    while($user = $user_data->fetch_assoc()) {
+        echo '<h3>Username: '.$user['u_name'].'</h3>';
+        echo '<h3>Name: '.$user['f_name'].' '.$user['l_name'].'</h3>';
+        echo '<h3>Email: '.$user['email'].'</h3>';
+
+        $sql = "SELECT * FROM employee WHERE u_id='$u_id'";
+
+        $res = $conn->query($sql);
+        if(mysqli_num_rows($res) != 0){
+            $emp = $res->fetch_assoc();
+            // The user is an employee, so display the salary
+            echo '<h3>Salary: '.$emp['salery'].'</h3>';
+        }
+    }
+?>
+        </div>
+    </div>
+    </div>
+    </div>
+</div>
+
     </body>
-	<script>
-		function goto_product_page(id) {
-			window.location.href = "product_page.php?pid=" + id;
-		}
-	</script>
 </html>
 
