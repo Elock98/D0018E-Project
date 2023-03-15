@@ -153,7 +153,9 @@ if(!isset($_SESSION["u_id"])) {
 		die("Connection failed: " . $conn->connect_error);
 	}
 
-	$sql = "SELECT * FROM employee";
+    $sql = "SELECT user.f_name, user.l_name, employee.u_id, employee.salery
+            FROM employee
+            INNER JOIN user ON employee.u_id=user.u_id";
 
 	$result = $conn->query($sql);
 

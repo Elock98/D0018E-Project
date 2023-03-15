@@ -98,6 +98,7 @@ if(!isset($_SESSION["u_id"])){
     if(mysqli_num_rows($res) != 0){
 ?>
 
+
                         <li class="inactive"><a href="admin_orders.php">View orders</a></li>
                         <li class="inactive"><a href="manager_page.php">Manage employees <span class="sr-only">(current)</a></li>
 <?php
