@@ -183,7 +183,7 @@ if(!isset($_SESSION["u_id"])){
                     for($i = 0; $i < $p_id_num; $i++) {
                         if(isset($_POST['decrease_'.$p_id_array[$i]])) {
 
-                            if($quantity_array[$i] > 0){
+                            if($quantity_array[$i] > 1){
                                 $sql = "UPDATE shopping_cart SET quantity =".($quantity_array[$i] - 1)." WHERE p_id =".$p_id_array[$i]."" ;
                                 $res = $conn->query($sql);
                                 $_SESSION['cart_update'] = 1;
