@@ -176,17 +176,21 @@ if(!isset($_SESSION["u_id"])){
 
             $result = $conn->query($sql);
 
+            $disabled="";
+            $color="black";
+            
             echo '<table class="table table-bordered table-responsive" cellpadding="0">';
             $row = $result->fetch_assoc();
+            if ($row['stock'] == 0) { $disabled="disabled"; $color="red"; }
             echo '<tr>
                 <td style="width: 20%">' . '<img src="'.$row['image'].'" width="100%" height="100%">' . '
                 <h3>review</h3></td>
                 <td><h1>' . $row['name'] . '</h1><hr>
                 <h3>' . $row['description'] . '</h3></td>
                 <td style="width:20%; vertical-allign: middle; text-allign: center;"><h2>' . $row['price'] . ' kr</h2>
-                <h2>' . $row['stock'] . ' in stock</h2>
+                <h2 style="color:'. $color .'">' . $row['stock'] . ' in stock</h2>
                 <form method="post">
-                    <input type="submit" name="add" value="Add to cart"/>
+                    <input type="submit" name="add" value="Add to cart" ' . $disabled . '/>
                 </form>
                 <h4 style="color:red">' . $error_msg . '</h4>
                 <h4 style="color:green">' . $succ_msg . '</h4></td>
