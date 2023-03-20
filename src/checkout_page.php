@@ -170,7 +170,15 @@ if(!isset($_SESSION["u_id"])){
                     }
 
                         /* reset post after loop, reset post variable*/
+
+                    if(isset($_POST['remove'])) {
+                        $p_id=$_POST['remove'];
+                        $conn->query("DELETE FROM shopping_cart WHERE c_id = $u_id AND p_id = $p_id");
+                        $_SESSION['cart_update'] = 1;
+                        echo "<script>location.reload()</script>";
+                    }
                 }
+
                 $p_id_array = array();
                 $quantity_array = array();
 
@@ -193,18 +201,20 @@ if(!isset($_SESSION["u_id"])){
            		    class="quantity-button increase-button"
       			    title="plus">+</button>
 
+                
+                 <button type="submit" name="remove" value="' . $row['p_id'] . '" style="margin-left:50%;">Remove from cart</button>
+                
+
 			    </h2></td>
                             <td style="width:20%; vertical-align: middle; text-align: center;">
                             <h2>' . $row['price'] . ' kr</h2></td>
-                        </tr>
-                        </form>';
+                        </tr>';
                 };
+
+                echo '<input type="submit" name="order" value="Order"/>
+                </form>';
                 $_SESSION['quantity_array'] = $quantity_array;
                 $_SESSION['p_id_array'] = $p_id_array;
-
-                echo '<form method="post">
-                        <input type="submit" name="order" value="Order"/>
-                    </form>';
 
 		        if(isset($_POST['order'])) {
                     # Check stock
