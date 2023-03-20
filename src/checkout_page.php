@@ -146,31 +146,6 @@ if(!isset($_SESSION["u_id"])){
                 $sql = "SELECT * FROM product INNER JOIN shopping_cart ON shopping_cart.c_id = '$u_id' WHERE product.p_id = shopping_cart.p_id";
                 $result = $conn->query($sql);
 
-                if($_SERVER['REQUEST_METHOD'] === 'POST') {
-                    /* Make loop through all p_ids*/
-                    $quantity_array = $_SESSION['quantity_array'];
-                    $p_id_array = $_SESSION['p_id_array'];
-                    $p_id_num = count($p_id_array);
-
-                    for($i = 0; $i < $p_id_num; $i++) {
-                        if(isset($_POST['decrease_'.$p_id_array[$i]])) {
-
-                            if($quantity_array[$i] > 0){
-                                $sql = "UPDATE shopping_cart SET quantity =".($quantity_array[$i] - 1)." WHERE p_id =".$p_id_array[$i]."" ;
-                                $res = $conn->query($sql);
-                                $_SESSION['cart_update'] = 1;
-                            }
-                        }
-
-                        if(isset($_POST['increase_'.$p_id_array[$i]])) {
-                            $sql = "UPDATE shopping_cart SET quantity =".($quantity_array[$i] + 1)." WHERE p_id =".$p_id_array[$i]."" ;
-                            $res = $conn->query($sql);
-                            $_SESSION['cart_update'] = 1;
-                        }
-                    }
-
-                        /* reset post after loop, reset post variable*/
-                }
                 $p_id_array = array();
                 $quantity_array = array();
 
@@ -199,6 +174,33 @@ if(!isset($_SESSION["u_id"])){
                         </tr>
                         </form>';
                 };
+                if($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    /* Make loop through all p_ids*/
+                    $quantity_array = $_SESSION['quantity_array'];
+                    $p_id_array = $_SESSION['p_id_array'];
+                    $p_id_num = count($p_id_array);
+
+                    for($i = 0; $i < $p_id_num; $i++) {
+                        if(isset($_POST['decrease_'.$p_id_array[$i]])) {
+
+                            if($quantity_array[$i] > 1){
+                                $sql = "UPDATE shopping_cart SET quantity =".($quantity_array[$i] - 1)." WHERE p_id =".$p_id_array[$i]."" ;
+                                $res = $conn->query($sql);
+                                $_SESSION['cart_update'] = 1;
+                                echo "<script>location.reload()</script>";
+                            }
+                        }
+
+                        if(isset($_POST['increase_'.$p_id_array[$i]])) {
+                            $sql = "UPDATE shopping_cart SET quantity =".($quantity_array[$i] + 1)." WHERE p_id =".$p_id_array[$i]."" ;
+                            $res = $conn->query($sql);
+                            $_SESSION['cart_update'] = 1;
+                            echo "<script>location.reload()</script>";
+                        }
+                    }
+
+                        /* reset post after loop, reset post variable*/
+                }
                 $_SESSION['quantity_array'] = $quantity_array;
                 $_SESSION['p_id_array'] = $p_id_array;
 
