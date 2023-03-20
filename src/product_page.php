@@ -221,15 +221,18 @@ if(!isset($_SESSION["u_id"])){
                 </form>
             </div>';
 
-	        while($row = $result->fetch_assoc()) {
+            $check=false; # Think bug but whenever you refresh the page $_POST['review'] is still set
+                          # and unset did not work for some reason...
+            while($row = $result->fetch_assoc()) {
+                if ($row['u_id'] == $_SESSION['u_id']) { $check=true; }
                 echo '<tr width="100%">
-                        <td width="15%"><p style="font-size:20px;line-height:0.5;padding-top:5px">' . $row['u_name'] . '</p></td>
-                        <td width="5%"><p style="font-size:20px;line-height:0.5;padding-top:5px">' . $row['score'] . ' / 5</p></td>
-                        <td width="80%"><p style="font-size:16px;line-height:0.5;padding-top:5px">' . $row['comment'] .'</p></td>
-                    </tr>';
+                    <td width="15%"><p style="font-size:20px;line-height:0.5;padding-top:5px">' . $row['u_name'] . '</p></td>
+                    <td width="5%"><p style="font-size:20px;line-height:0.5;padding-top:5px">' . $row['rating'] . ' / 5</p></td>
+                    <td width="80%"><p style="font-size:16px;line-height:0.5;padding-top:5px">' . $row['comment'] .'</p></td>
+                </tr>';
             };
 
-            if (isset($_POST['review']) && isset($_SESSION['u_id'])) {
+            if (isset($_POST['review']) && isset($_SESSION['u_id']) && !$check) {
                 $u_id=$_SESSION['u_id'];
                 $qry="SELECT * FROM order_item INNER JOIN orders ON orders.u_id = $u_id WHERE order_item.p_id = $p_id";
                 $orderCheck=$conn->query($qry);
@@ -239,12 +242,11 @@ if(!isset($_SESSION["u_id"])){
                 } else {
                     $rating=$_POST['rating'];
                     $comment=$_POST['comment'];
-                    $review="INSERT INTO review (u_id, p_id, score, comment) VALUES ($u_id, $p_id, $rating, $comment)";
+                    $review="INSERT INTO review (u_id, p_id, rating, comment) VALUES ($u_id, $p_id, $rating, '$comment')";
                     $conn->query($review);
                     echo "<script>location.reload()</script>";
                 }
             }
-
         ?>
     </body>
 </html>
